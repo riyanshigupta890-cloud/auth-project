@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 40px;
+      width: 450px;
+      text-align: center;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+    }
+    .avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #e94560, #0f3460);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 20px;
+    }
+    h2 { color: #fff; font-size: 26px; margin-bottom: 8px; }
+    p.email { color: #aaa; font-size: 14px; margin-bottom: 24px; }
+    .info-box {
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .info-box label { color: #aaa; font-size: 12px; text-transform: uppercase; }
+    .info-box p { color: #fff; font-size: 16px; margin-top: 4px; }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .badge.user { background: rgba(0,200,100,0.2); color: #00c864; }
+    .badge.admin { background: rgba(233,69,96,0.2); color: #e94560; }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #e94560, #0f3460);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.3s;
+    }
+    button:hover { opacity: 0.9; transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="avatar">👤</div>
+    <h2 id="welcomeMsg">Welcome!</h2>
+    <p class="email" id="userEmail"></p>
+
+    <div class="info-box">
+      <label>Full Name</label>
+      <p id="userName">Loading...</p>
+    </div>
+
+    <div class="info-box">
+      <label>Role</label>
+      <p><span class="badge" id="userRole">Loading...</span></p>
+    </div>
+
+    <div class="info-box">
+      <label>Status</label>
+      <p style="color: #00c864;">🟢 Authenticated</p>
+    </div>
+
+    <button onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('welcomeMsg').textContent = `Welcome, ${user.name}! 🎉`;
+    document.getElementById('userEmail').textContent = user.email;
+    document.getElementById('userName').textContent = user.name;
+
+    const roleEl = document.getElementById('userRole');
+    roleEl.textContent = user.role;
+    roleEl.className = `badge ${user.role}`;
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

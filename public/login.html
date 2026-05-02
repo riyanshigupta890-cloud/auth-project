@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 40px;
+      width: 400px;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+    }
+    h2 { color: #fff; text-align: center; margin-bottom: 8px; font-size: 28px; }
+    p.subtitle { color: #aaa; text-align: center; margin-bottom: 30px; font-size: 14px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; color: #ccc; margin-bottom: 8px; font-size: 14px; }
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    input:focus { border-color: #e94560; background: rgba(255,255,255,0.12); }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #e94560, #0f3460);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    button:hover { opacity: 0.9; transform: translateY(-2px); }
+    .message {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      display: none;
+    }
+    .success { background: rgba(0,200,100,0.2); color: #00c864; display: block; }
+    .error { background: rgba(233,69,96,0.2); color: #e94560; display: block; }
+    .register-link { text-align: center; margin-top: 20px; color: #aaa; font-size: 14px; }
+    .register-link a { color: #e94560; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>👋 Welcome Back</h2>
+    <p class="subtitle">Login to your account</p>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="Enter your email">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter your password">
+    </div>
+
+    <button onclick="login()">Login</button>
+    <div class="message" id="message"></div>
+
+    <div class="register-link">
+      Don't have an account? <a href="register.html">Register here</a>
+    </div>
+  </div>
+
+  <script>
+    async function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const msg = document.getElementById('message');
+
+      if (!email || !password) {
+        msg.className = 'message error';
+        msg.textContent = 'Please fill in all fields!';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          msg.className = 'message success';
+          msg.textContent = '✅ Login successful! Redirecting...';
+          setTimeout(() => window.location.href = 'dashboard.html', 1500);
+        } else {
+          msg.className = 'message error';
+          msg.textContent = '❌ ' + data.message;
+        }
+      } catch (err) {
+        msg.className = 'message error';
+        msg.textContent = '❌ Server error. Try again!';
+      }
+    }
+  </script>
+</body>
+</html>

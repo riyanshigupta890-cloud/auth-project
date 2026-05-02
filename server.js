@@ -3,9 +3,14 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 dotenv.config();
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 
 const app = express();
 app.use(express.json());
+
+const path = require('path');
+app.use(express.static('public'));
 
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
