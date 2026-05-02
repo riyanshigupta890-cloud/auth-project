@@ -1,16 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
-const path = require('path');
-app.use(express.static(path.join(__dirname, 'public')));
 
 const app = express();
 app.use(express.json());
-
-const path = require('path');
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
